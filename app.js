@@ -1,32 +1,47 @@
 const express = require('express')
+const morgan = require('morgan')
+const serveFavicon = require('serve-favicon')
+const { Sequelize, DataTypes } = require('sequelize')
+const CoworkingModel = require('./models/coworking')
 const app = express()
 const port = 3000
-var morgan = require('morgan')
-var favicon = require('serve-favicon')
 
-
-const coworkings = require('./mock-coworkings');
-
-app.use(morgan('dev'));
-app.use(favicon((__dirname,'favicon.ico')))
-
-app.get('/api/coworkings', (req, res) => {
-    // Renvoyer tous les coworkings au format json, uniquement ceux dont la surface est supérieure à 500
-    console.log(req.query)
-    const limit = req.query.limit || 200
-    const result = coworkings.filter(element => element.superficy > limit);
-
-    res.json(result)
+const sequelize = new Sequelize('lapiscine_coworking', 'root', 'root', {
+    host: 'localhost',
+    dialect: 'mariadb',
+    logging: false,
+    port: 8889
 })
 
-app.get('/api/coworkings/:id', (req, res) => {
+const Coworking = CoworkingModel(sequelize, DataTypes);
 
-    const myCoworking = coworkings.find(element => element.id == req.params.id)
-    const msg = `Le coworking  n°${myCoworking.id} a bien été retourné`
+sequelize.sync({ force: true })
+    .then(() => {
+        Coworking.create({
+            id: 12,
+            name: "Oasis Coworking",
+            price: { "hour": 4, "day": 21, "month": 100 },
+            address: { "number": "68bis", "street": "avenue Jean Jaurès", "postCode": 33150, "city": "Cenon" },
+            picture: "",
+            superficy: 200,
+            capacity: 27
+        })
+        .then(() => {console.log('La base a bien été synchronisée');})
+        .catch((error) => {console.error(error);})
+    })
 
-    myCoworking ? res.json({message: msg, data: myCoworking}) : res.status(404).json({message: `Le coworking n°${myCoworking.id}'existe pas`})
+sequelize.authenticate()
+    .then(() => console.log('La connexion à la base de données a bien été établie.'))
+    .catch(error => console.error(`Impossible de se connecter à la base de données ${error}`))
 
-})
+app
+    .use(morgan('dev'))
+    .use(serveFavicon(__dirname + '/favicon.ico'))
+    .use(express.json())
+
+const coworkingRouter = require('./routes/coworkingRoutes')
+
+app.use('/api/coworkings', coworkingRouter)
 
 app.listen(port, () => {
     console.log(`L'app sur le port ${port}`)
