@@ -1,20 +1,28 @@
 {
-  "name": "coworking-piscine",
+  "name": "expressjs-lapiscine-coworking",
   "version": "1.0.0",
-  "description": "",
+  "description": "Project to learn expressjs",
   "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/LiamImamovic/Coworking-Piscine.git"
-  },
+  
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon app.js"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PaulDoazan/ExpressJS-LAPISCINE-Coworking.git"
+  },
+  "author": "PaulD",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PaulDoazan/ExpressJS-LAPISCINE-Coworking/issues"
+  },
+  "homepage": "https://github.com/PaulDoazan/ExpressJS-LAPISCINE-Coworking#readme",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "body-parser": "^1.20.2",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
     "mariadb": "^3.1.1",
     "sequelize": "^6.30.0",
     "serve-favicon": "^2.5.0"
